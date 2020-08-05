@@ -1,15 +1,15 @@
 export interface IDoctor {
-    name: string
-};
+  name: string;
+}
 
 export interface IRecord {
-    patient: string,
-    doctor: IDoctor,
-    datetime: Date,
-    complaints?: string[]
-};
+  patient: string;
+  doctor: IDoctor;
+  datetime: Date;
+  complaints?: string[];
+}
 
 export interface IContext {
-    doctors: IDoctor[],
-    records: IRecord[]
+  doctors: IDoctor[];
+  records: IRecord[];
 }
