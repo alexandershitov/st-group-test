@@ -1,6 +1,6 @@
 import path from 'path';
 
-const serverRoot = () => path.join(__dirname, '../../');
+const serverRoot = () => path.join(__dirname, '../../../');
 
 const viewsPath = () => path.join(serverRoot(), 'views');
 
