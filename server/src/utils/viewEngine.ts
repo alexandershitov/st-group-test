@@ -1,14 +1,14 @@
-import exphbs from 'express-handlebars';
-import { Paths } from './paths';
+import exphbs from "express-handlebars";
+import { Paths } from "./paths";
 
-const defaultLayout = () => 'layout';
+const defaultLayout = () => "layout";
 
-const extname = () => 'hbs';
+const extname = () => "hbs";
 
 const config = () => ({
   defaultLayout: defaultLayout(),
   extname: extname(),
-  layoutsDir: Paths.layoutsPath()
+  layoutsDir: Paths.layoutsPath(),
 });
 
 const call = () => exphbs(config());
