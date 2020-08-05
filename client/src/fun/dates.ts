@@ -18,6 +18,12 @@ const copyWithReplace = (stamp: Date, params: DateParameters): Date =>
 const first = (stamp: Date): Date => {
   if (stamp.getHours() < 9) {
     return copyWithReplace(stamp, { hour: 9, min: 0 });
+  } else if (stamp.getHours() >= 17 && stamp.getMinutes() >= 30) {
+    return copyWithReplace(stamp, {
+      date: stamp.getDate() + 1,
+      hour: 9,
+      min: 0,
+    });
   } else {
     const newMin = stamp.getMinutes() >= 30 ? 0 : 30;
     const newHour = newMin === 0 ? stamp.getHours() + 1 : stamp.getHours();
@@ -46,9 +52,33 @@ const forDay = (stamps: Date[], intervalMin: number = 30): Date[] => {
   return next.getHours() > 17 ? stamps : forDay([next, ...stamps]);
 };
 
-const call = () =>
-  forDay([first(new Date())])
-    .reverse()
-    .map((t) => format(t));
+const forWeek = (now: Date) => {
+  const firstAvailable = first(now);
+
+  let firstAvailableByDays = [
+    copyWithReplace(firstAvailable, {
+      hour: firstAvailable.getHours(),
+      min: firstAvailable.getMinutes() - 1,
+    }),
+    ...Array.from({ length: 6 }, (_, idx) =>
+      copyWithReplace(firstAvailable, {
+        hour: 8,
+        min: 0,
+        date: firstAvailable.getDate() + idx + 1,
+      })
+    ),
+  ];
+
+  return [].concat.apply(
+    [],
+    firstAvailableByDays.map((d) =>
+      forDay([first(d)])
+        .reverse()
+        .map((t) => format(t))
+    )
+  );
+};
+
+const call = () => forWeek(new Date());
 
 export const Dates = { call };
