@@ -1,12 +1,10 @@
 import * as React from "react";
-import { IDoctor } from "../interfaces";
+import { RegisterForm } from "../components/register/RegisterForm";
 
 export interface IRegisterProps {
-  doctors: IDoctor[];
+  doctors: string[];
 }
 
-export const Register: React.SFC<IRegisterProps> = ({ doctors }) => {
-  console.log("Register");
-  console.log(doctors);
-  return <div>Register Container</div>;
-};
+export const Register: React.SFC<IRegisterProps> = ({ doctors }) => (
+  <RegisterForm doctors={doctors} />
+);
