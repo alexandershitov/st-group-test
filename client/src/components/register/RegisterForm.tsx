@@ -1,41 +1,32 @@
 import * as React from "react";
 import { Dates } from "../../fun/dates";
+import { IRegisterFormResponse, IRegisterFormProps } from "./interfaces";
 
-export interface IRegisterFormData {
-  patient: string;
-  doctor: string;
-  datetime: string;
-  complaints?: string;
-}
-
-export interface IRegisterFormResult {
-  success: boolean;
-  message: string;
-}
-
-export interface IRegisterFormProps {
-  doctors: string[];
-  onRegister: (data: IRegisterFormData) => IRegisterFormResult;
-}
-
-export const RegisterForm: React.SFC<IRegisterFormProps> = ({ doctors, onRegister }) => {
-  const dateVariants = Dates.forRegister();
+export const RegisterForm: React.SFC<IRegisterFormProps> = ({
+  doctors,
+  onRegister,
+}) => {
+  const datetimeVariants = Dates.forRegister();
 
   const [patient, setPatient] = React.useState<string>("");
-  const [patientError, setPatientError] = React.useState<string>("");
+  const [patientErrors, setPatientErrors] = React.useState<string[]>([]);
 
   const [doctor, setDoctor] = React.useState<string>(doctors[0]);
+  const [doctorErrors, setDoctorErrors] = React.useState<string[]>([]);
 
-  const [datetime, setDatetime] = React.useState<string>(dateVariants[0]);
+  const [datetime, setDatetime] = React.useState<string>(datetimeVariants[0]);
+  const [datetimeErrors, setDatetimeErrors] = React.useState<string[]>([]);
 
   const [complaints, setComplaints] = React.useState<string>("");
 
-  const [submitted, setSubmitted] = React.useState<Boolean>(false);
+  const [submitted, setSubmitted] = React.useState<boolean>(false);
 
-  const [submitResult, setSubmitResult] = React.useState<IRegisterFormResult>({
-    success: false,
-    message: "",
-  });
+  const [submitResult, setSubmitResult] = React.useState<IRegisterFormResponse>(
+    {
+      success: false,
+      result: {},
+    }
+  );
 
   const onPatientChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -59,7 +50,8 @@ export const RegisterForm: React.SFC<IRegisterFormProps> = ({ doctors, onRegiste
       ? "Не может состоять только из пробелов"
       : "";
 
-    setPatientError(error);
+    setPatientErrors([error]);
+    setSubmitted(false);
 
     return error;
   };
@@ -79,21 +71,49 @@ export const RegisterForm: React.SFC<IRegisterFormProps> = ({ doctors, onRegiste
     setComplaints(e.currentTarget.value);
   };
 
+  const clearForm = () => {
+    setPatient("");
+    setPatientErrors([]);
+
+    setDoctor(doctors[0]);
+    setDoctorErrors([]);
+
+    setDatetime(datetimeVariants[0]);
+    setDatetimeErrors([]);
+
+    setComplaints("");
+  };
+
+  const handleServerResponse = (response: IRegisterFormResponse) => {
+    const { result, success } = response;
+
+    if (success) {
+      clearForm();
+      setSubmitResult(response);
+    } else {
+      setSubmitted(false);
+      const errors = result.errors;
+
+      setPatientErrors(errors.patient || []);
+      setDoctorErrors(errors.doctor || []);
+      setDatetimeErrors(errors.datetime || []);
+    }
+  };
+
   const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const patientError = validatePatient(patient);
 
-    if (patientError === "") {
-      const result = onRegister({
+    if (validatePatient(patient) === "") {
+      setSubmitted(true);
+
+      onRegister({
         patient,
         doctor,
         datetime,
         complaints,
+      }).then((response: IRegisterFormResponse) => {
+        handleServerResponse(response);
       });
-      setPatient("");
-      setComplaints("");
-      setSubmitResult(result);
-      setSubmitted(true);
     }
   };
 
@@ -111,7 +131,9 @@ export const RegisterForm: React.SFC<IRegisterFormProps> = ({ doctors, onRegiste
         />
       </p>
       <p>
-        <span className="error">{patientError}</span>
+        {patientErrors.map((e: string) => (
+          <span className="error">{e}</span>
+        ))}
       </p>
 
       <p>Лечащий врач:</p>
@@ -123,18 +145,28 @@ export const RegisterForm: React.SFC<IRegisterFormProps> = ({ doctors, onRegiste
           onChange={onDoctorChange}
         >
           {doctors.map((o: string) => (
-            <option>{o}</option>
+            <option key={o}>{o}</option>
           ))}
         </select>
+      </p>
+      <p>
+        {doctorErrors.map((e: string) => (
+          <span className="error">{e}</span>
+        ))}
       </p>
 
       <p>Время записи:</p>
       <p>
         <select id="datetime" name="datetime" onChange={onDatetimeChange}>
-          {dateVariants.map((o: string) => (
-            <option>{o}</option>
+          {datetimeVariants.map((o: string) => (
+            <option key={o} selected={o === datetime}>{o}</option>
           ))}
         </select>
+      </p>
+      <p>
+        {datetimeErrors.map((e: string) => (
+          <span className="error">{e}</span>
+        ))}
       </p>
 
       <p>Жалобы:</p>
@@ -154,7 +186,7 @@ export const RegisterForm: React.SFC<IRegisterFormProps> = ({ doctors, onRegiste
         </button>
       </p>
 
-      {submitted && <p>{submitResult.message}</p>}
+      {submitted && <p>{submitResult.result.message}</p>}
     </form>
   );
 };

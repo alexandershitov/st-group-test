@@ -9,20 +9,12 @@ const makeHeaders = (headers?: object) =>
 
 const postRecordPath = () => apiPath("post-record");
 
-const postRecord = (payload: object, headers?: object) => {
-  try {
-    return fetch(postRecordPath(), {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: makeHeaders(headers),
-    })
-      .then((res) => res.json())
-      .then((data) => data);
-
-  } catch (error) {
-    return { error: "Error occured while POST'ing data" };
-  }
-};
+const postRecord = (payload: object, headers?: object) =>
+  fetch(postRecordPath(), {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: makeHeaders(headers),
+  });
 
 const deleteRecordPath = () => apiPath("delete-record");
 
