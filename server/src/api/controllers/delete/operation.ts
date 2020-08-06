@@ -11,6 +11,6 @@ export const operation = (req, res, next) => {
     const { doctor, datetime } = req.body;
     DB.deleteRecord(doctor, datetime);
     
-    return res.status(200).json({ result: "OK" });
+    return res.status(200).json({ });
   }
 };

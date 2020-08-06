@@ -9,6 +9,6 @@ export const operation = (req, res, next) => {
     return res.status(422).json({ errors: Errors.combine(errors) });
   } else {
     DB.postRecord(req.body);
-    return res.status(200).json({ result: "OK" });
+    return res.status(200).json({ });
   }
 };
