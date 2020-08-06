@@ -1,8 +1,13 @@
 export interface IRecord {
   patient: string;
   doctor: string;
-  datetime: Date;
-  complaints?: string[];
+  datetime: string;
+  complaints?: string;
+}
+
+export interface IRecordToRemove {
+  doctor: string;
+  datetime: string;
 }
 
 export interface IContext {

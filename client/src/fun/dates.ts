@@ -79,6 +79,10 @@ const forWeek = (now: Date) => {
   );
 };
 
-const call = () => forWeek(new Date());
+const forRegister = (): string[] => forWeek(new Date());
 
-export const Dates = { call };
+const forSchedule = (): string[] => [
+  ...new Set(forRegister().map((d: string) => d.split(",")[0])),
+];
+
+export const Dates = { forRegister, forSchedule };

@@ -13,13 +13,14 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
+    "@types/react": "^16.9.44",
+    "@types/react-dom": "^16.9.8",
     "concurrently": "^5.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "source-map-loader": "^1.0.1",
     "ts-loader": "^8.0.2",
     "typescript": "^3.9.7",
-    "typings": "^2.1.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"

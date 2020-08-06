@@ -7,9 +7,19 @@ export interface IAppProps {
   context: IContext;
 }
 
-export const App: React.SFC<IAppProps> = ({ context }) =>
-  window.location.pathname === "/schedule" ? (
-    <Schedule context={context} />
-  ) : (
-    <Register doctors={context.doctors} />
-  );
+export const App: React.SFC<IAppProps> = ({ context }) => (
+  <>
+    <p>
+      <a href="http://127.0.0.1:3000/">Записаться на прием</a>
+    </p>
+    <p>
+      <a href="http://127.0.0.1:3000/schedule">Расписание врачей</a>
+    </p>
+
+    {window.location.pathname === "/schedule" ? (
+      <Schedule context={context} />
+    ) : (
+      <Register doctors={context.doctors} />
+    )}
+  </>
+);
