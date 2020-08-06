@@ -21,7 +21,7 @@ const postRecord = (record: object) => {
 
   saveData({
     ...data,
-    records: [...data.records, { id: data.records.length, ...record }],
+    records: [...data.records, record ],
   });
 };
 
@@ -31,7 +31,7 @@ const deleteRecord = (doctor: string, datetime: string) => {
   saveData({
     ...data,
     records: data.records.filter(
-      (r) => r.doctor !== doctor && r.datetime !== datetime
+      (r) => !(r.doctor === doctor && r.datetime === datetime)
     ),
   });
 };

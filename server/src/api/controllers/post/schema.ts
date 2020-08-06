@@ -21,11 +21,11 @@ export const schema = () => [
     .withMessage("Данного врача не существует")
     .custom((value, { req }) => {
       const records = DB.getRecords();
-      return records.length === 0
-        ? true
-        : records.filter((r) => {
-            r.doctor === value && r.datetime === req.body.datetime;
-          })[0] !== undefined;
+      const existing = records.filter(
+        (r) => r.doctor === value && r.datetime === req.body.datetime
+      );
+
+      return existing.length === 0;
     })
     .withMessage("Данный врач в это время уже имеет запись"),
 
